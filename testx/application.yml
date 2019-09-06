@@ -1,8 +1,0 @@
-testConfig:
-  ip: 192.168.56.140
-  username: itcloud
-  password: 123232
-
-application:
-  name: test-application
-  server.port: 8090
