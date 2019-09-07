@@ -2,7 +2,19 @@
 
 > infra是一个Golang实现的极其简单的依赖注入框架，使用Yaml作为配置文件。支持`组件配置`,`组件扩展`
 >
-> 
+> 目前支持的组件
+>
+> Gin:https://github.com/anypick/infra-gin
+>
+> Logrus:https://github.com/anypick/infra-logrus
+>
+> MySQL:https://github.com/anypick/infra-mysql
+>
+> Redis:https://github.com/anypick/infra-redis
+>
+> RabbitMQ:https://github.com/anypick/infra-rabbit
+>
+> GRPC:开发中
 
 # 2. infra文件介绍
 
@@ -209,4 +221,3 @@ func main() {
 	application.Start()
 }
 ```
-
