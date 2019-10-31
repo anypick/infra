@@ -2,32 +2,31 @@ package container
 
 import (
 	"github.com/anypick/infra"
-	"github.com/anypick/infra/base/props"
 	"reflect"
 )
 
+// 配置类的父类
 type YamlConfig interface {
 	// 配置添加
 	ConfigAdd(map[interface{}]interface{})
 }
 
+var yamlContainer []YamlConfig = make([]YamlConfig, 0)
 
-type YamlContainer struct {
-	YamlConfigs []YamlConfig
+// 配置添加
+func Add(yaml YamlConfig) {
+	yamlContainer = append(yamlContainer, yaml)
 }
 
-func (y *YamlContainer) Add(yaml YamlConfig) {
-	y.YamlConfigs = append(y.YamlConfigs, yaml)
-}
-
-var yamlContainers = new(YamlContainer)
-
-func RegisterYamContainer(yaml YamlConfig) {
-	yamlContainers.Add(yaml)
-}
-
-func GetYamlConfigs() []YamlConfig {
-	return yamlContainers.YamlConfigs
+// 装载配置
+func Execute(ctx infra.StarterContext) {
+	mapData := ctx.Yaml()
+	for _, yamlConfig := range yamlContainer {
+		prefix := reflect.ValueOf(yamlConfig).Elem().FieldByName("Prefix").String()
+		config := mapData[prefix].(map[interface{}]interface{})
+		ctx.Yaml()[prefix] = yamlConfig
+		yamlConfig.ConfigAdd(config)
+	}
 }
 
 type YamlStarter struct {
@@ -35,16 +34,5 @@ type YamlStarter struct {
 }
 
 func (y *YamlStarter) Init(ctx infra.StarterContext) {
-	mapData := props.GetMapData()
-	for _, register := range GetYamlConfigs() {
-		prefix := reflect.ValueOf(register).Elem().FieldByName("Prefix").String()
-		config := mapData[prefix].(map[interface{}]interface{})
-		ctx.Yaml().OtherConfig[prefix] = register
-		register.ConfigAdd(config)
-	}
+	Execute(ctx)
 }
-
-
-
-
-

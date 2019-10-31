@@ -1,10 +1,13 @@
 package basegin
 
 import (
+	"fmt"
 	"github.com/anypick/infra"
-	"github.com/anypick/infra-gin/helper"
+	"github.com/anypick/infra/testx/infra-gin/config"
+	"github.com/sirupsen/logrus"
+
+	//"github.com/anypick/infra-gin/helper"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -21,26 +24,27 @@ type GinStarter struct {
 
 func (g *GinStarter) Init(ctx infra.StarterContext) {
 	ginEngine = initGinApp()
-	ginEngine.GET("/test", func(context *gin.Context) {
+	ginEngine.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"ping": "pong"})
 	})
 }
 
 func (g *GinStarter) Start(ctx infra.StarterContext) {
+	conf := ctx.Yaml()[config.DefaultPrefix].(*config.GinApp)
 	var (
 		engine *gin.Engine
-		port   string
 		e      error
 	)
 	engine = Gin()
-	port = ctx.Yaml().Application.Port;
 	routes := engine.Routes()
 	for _, info := range routes {
-		log.Println(info.Method, info.Path, info.Handler)
+		logrus.Infof("API: %s %s %s", info.Method, info.Path, info.Handler)
 	}
-	if e = engine.Run(":" + port); e != nil {
-		log.Fatal(e)
+	logrus.Infof("gin start with port %d", conf.Port)
+	if e = engine.Run(fmt.Sprintf(":%d", conf.Port)); e != nil {
+		panic(e)
 	}
+
 }
 
 // web服务是阻塞的
@@ -52,6 +56,5 @@ func (g *GinStarter) StartBlocking() bool {
 func initGinApp() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	app := gin.New()
-	app.Use(helper.GetAllMiddleWares()...)
 	return app
 }

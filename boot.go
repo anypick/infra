@@ -28,27 +28,26 @@ func (b *BootApplication) Start() {
 }
 
 func (b *BootApplication) init() {
-	logrus.Info("Application init...")
 	starters := StarterRegister.AllStarters()
 	for _, starter := range starters {
 		starter.Init(b.starterContext)
 	}
+	logrus.Info("Application init finished...")
 }
 
 func (b *BootApplication) setup() {
-	logrus.Info("Application setup...")
 	starters := StarterRegister.AllStarters()
 	for _, starter := range starters {
 		starter.Setup(b.starterContext)
 	}
+	logrus.Info("Application setup finished...")
 }
 
 func (b *BootApplication) start() {
-	logrus.Info("Application start")
 	starters := StarterRegister.AllStarters()
 	for index, starter := range starters {
 		typ := reflect.TypeOf(starter)
-		logrus.Info("Starting: ", typ.String())
+		logrus.Infof("Starting:%s", typ.String())
 		if starter.StartBlocking() {
 			if index+1 == len(StarterRegister.AllStarters()) {
 				starter.Start(b.starterContext)
