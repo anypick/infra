@@ -6,18 +6,18 @@ const (
 )
 
 type ResponseData struct {
-	Code    int
-	Msg     string `json:",omitempty"`
-	Success bool
-	Total   int
-	Rows    interface{}
+	Code    int         `json:"code"`
+	Msg     string      `json:",omitempty"`
+	Success bool        `json:"success"`
+	Total   int         `json:"total"`
+	Rows    interface{} `json:"rows"`
 }
 
 func NewRespSucc() ResponseData {
 	return ResponseData{Code: SuccessCode, Success: true}
 }
 
-func NewRespSuccWithData(rows interface{},  total int) ResponseData {
+func NewRespSuccWithData(rows interface{}, total int) ResponseData {
 	return ResponseData{Code: SuccessCode, Success: true, Total: total, Rows: rows}
 }
 
