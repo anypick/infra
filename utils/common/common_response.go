@@ -7,7 +7,7 @@ const (
 
 type ResponseData struct {
 	Code    int         `json:"code"`
-	Msg     string      `json:",omitempty"`
+	Msg     string      `json:"msg,omitempty"`
 	Success bool        `json:"success"`
 	Total   int         `json:"total"`
 	Rows    interface{} `json:"rows"`
@@ -25,10 +25,18 @@ func NewRespSuccWithMsg(msg string) ResponseData {
 	return ResponseData{Code: SuccessCode, Msg: msg, Success: true, Total: 0}
 }
 
+func NewRespSuccWithCodeMsg(code int, msg string) ResponseData {
+	return ResponseData{Code: code, Msg: msg, Success: true, Total: 0}
+}
+
 func NewRespFail() ResponseData {
 	return ResponseData{Code: FailCode, Success: false}
 }
 
 func NewRespFailWithMsg(msg string) ResponseData {
 	return ResponseData{Code: FailCode, Success: false, Msg: msg}
+}
+
+func NewRespFailWithCodeMsg(code int, msg string) ResponseData {
+	return ResponseData{Code: code, Success: false, Msg: msg}
 }
