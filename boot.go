@@ -12,9 +12,18 @@ type BootApplication struct {
 	starterContext StarterContext
 }
 
+var (
+	yamlProps props.YamlSource
+)
+
+func GetYamlProps() props.YamlSource {
+	return yamlProps
+}
+
 func New(conf props.YamlSource) *BootApplication {
 	application := &BootApplication{conf, StarterContext{}}
 	application.starterContext[defaultProps] = conf
+	yamlProps = conf
 	return application
 }
 
